@@ -38,4 +38,4 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_KEY }}
-          GITHUB_REPOSITORY: MirageMind/PlotSquared
+          GITHUB_REPOSITORY: Neeeptunus/PlotSquared
