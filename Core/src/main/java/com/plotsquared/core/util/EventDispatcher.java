@@ -25,6 +25,7 @@ import com.plotsquared.core.configuration.Settings;
 import com.plotsquared.core.configuration.caption.TranslatableCaption;
 import com.plotsquared.core.events.PlayerAutoPlotEvent;
 import com.plotsquared.core.events.PlayerAutoPlotsChosenEvent;
+import com.plotsquared.core.events.PlayerBuyPlotEvent;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
 import com.plotsquared.core.events.PlayerEnterPlotEvent;
 import com.plotsquared.core.events.PlayerLeavePlotEvent;
@@ -49,7 +50,9 @@ import com.plotsquared.core.events.PlotUnlinkEvent;
 import com.plotsquared.core.events.RemoveRoadEntityEvent;
 import com.plotsquared.core.events.TeleportCause;
 import com.plotsquared.core.events.post.PostPlayerAutoPlotEvent;
+import com.plotsquared.core.events.post.PostPlayerBuyPlotEvent;
 import com.plotsquared.core.events.post.PostPlotChangeOwnerEvent;
+import com.plotsquared.core.events.post.PostPlotClearEvent;
 import com.plotsquared.core.events.post.PostPlotDeleteEvent;
 import com.plotsquared.core.events.post.PostPlotMergeEvent;
 import com.plotsquared.core.events.post.PostPlotUnlinkEvent;
@@ -57,6 +60,7 @@ import com.plotsquared.core.listener.PlayerBlockEventType;
 import com.plotsquared.core.location.Direction;
 import com.plotsquared.core.location.Location;
 import com.plotsquared.core.permissions.Permission;
+import com.plotsquared.core.player.OfflinePlotPlayer;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.PlotArea;
@@ -175,6 +179,12 @@ public class EventDispatcher {
 
     public PlotClearEvent callClear(Plot plot) {
         PlotClearEvent event = new PlotClearEvent(plot);
+        callEvent(event);
+        return event;
+    }
+
+    public PostPlotClearEvent callPostPlotClear(PlotPlayer<?> player, Plot plot) {
+        PostPlotClearEvent event = new PostPlotClearEvent(player, plot);
         callEvent(event);
         return event;
     }
@@ -313,6 +323,17 @@ public class EventDispatcher {
         PlayerPlotLimitEvent event = new PlayerPlotLimitEvent(player, calculatedLimit);
         eventBus.post(event);
         return event;
+    }
+
+    public PlayerBuyPlotEvent callPlayerBuyPlot(PlotPlayer<?> player, Plot plot, double price) {
+        PlayerBuyPlotEvent event = new PlayerBuyPlotEvent(player, plot, price);
+        eventBus.post(event);
+        return event;
+    }
+
+    public void callPostPlayerBuyPlot(PlotPlayer<?> player, OfflinePlotPlayer previousOwner, Plot plot,
+                                      double price) {
+        eventBus.post(new PostPlayerBuyPlotEvent(player, previousOwner, plot, price));
     }
 
     public void doJoinTask(final PlotPlayer<?> player) {
